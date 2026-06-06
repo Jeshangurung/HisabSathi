@@ -1,4 +1,4 @@
-import { ArrowRight, ShieldCheck, Sparkles, WalletCards } from "lucide-react";
+import { ArrowRight, BellRing, CheckCircle2, ShieldCheck, Sparkles, WalletCards } from "lucide-react";
 import { Link } from "react-router-dom";
 
 import Button from "../../../components/common/Button.jsx";
@@ -14,7 +14,7 @@ const highlights = [
 export default function LandingPage() {
   return (
     <main className="min-h-screen bg-mist text-ink">
-      <section className="mx-auto grid min-h-screen max-w-7xl content-center gap-12 px-4 py-12 md:grid-cols-[1.05fr_0.95fr] md:px-8">
+      <section className="premium-grid mx-auto grid min-h-screen max-w-7xl content-center gap-12 px-4 py-12 md:grid-cols-[1.05fr_0.95fr] md:px-8">
         <div className="flex flex-col justify-center">
           <p className="text-sm font-bold uppercase text-sathi">Nepal-focused expense clarity</p>
           <h1 className="mt-4 max-w-3xl text-5xl font-black leading-tight md:text-7xl">HisabSathi</h1>
@@ -34,19 +34,23 @@ export default function LandingPage() {
           <div className="rounded-lg bg-ink p-5 text-white">
             <div className="flex items-center justify-between border-b border-white/10 pb-4">
               <div>
-                <p className="text-sm text-zinc-400">Pokhara Trip</p>
-                <p className="mt-1 text-3xl font-black">Rs. 18,420</p>
+                <p className="text-sm text-zinc-400">Settlement clarity</p>
+                <p className="mt-1 text-3xl font-black">Split. Track. Confirm.</p>
               </div>
-              <span className="rounded-full bg-sathi px-3 py-1 text-xs font-bold text-white">Live</span>
+              <span className="rounded-full bg-sathi px-3 py-1 text-xs font-bold text-white">MVP</span>
             </div>
             <div className="mt-5 space-y-3">
-              {["Dinner split", "Hotel advance", "Taxi from airport"].map((item, index) => (
-                <div className="flex items-center justify-between rounded-lg bg-white/[0.08] p-4" key={item}>
+              {[
+                { icon: WalletCards, label: "Create group expense" },
+                { icon: BellRing, label: "Send payment reminder" },
+                { icon: CheckCircle2, label: "Confirm settlement" },
+              ].map((item) => (
+                <div className="flex items-center justify-between rounded-lg bg-white/[0.08] p-4" key={item.label}>
                   <div>
-                    <p className="font-semibold">{item}</p>
-                    <p className="mt-1 text-sm text-zinc-400">{index + 2} friends involved</p>
+                    <p className="font-semibold">{item.label}</p>
+                    <p className="mt-1 text-sm text-zinc-400">Connected workflow</p>
                   </div>
-                  <p className="font-bold">Rs. {(index + 1) * 1250}</p>
+                  <item.icon size={20} />
                 </div>
               ))}
             </div>

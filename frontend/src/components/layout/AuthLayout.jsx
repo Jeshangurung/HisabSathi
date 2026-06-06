@@ -1,7 +1,7 @@
 export default function AuthLayout({ children, title, subtitle }) {
   return (
-    <main className="grid min-h-screen bg-mist px-4 py-8 md:grid-cols-[1fr_1.1fr] md:px-8">
-      <section className="hidden flex-col justify-between rounded-lg bg-ink p-10 text-white md:flex">
+    <main className="grid min-h-screen bg-mist px-4 py-8 md:grid-cols-[1fr_1.05fr] md:px-8">
+      <section className="premium-grid hidden flex-col justify-between rounded-lg bg-ink p-10 text-white md:flex">
         <div>
           <div className="text-2xl font-black">HisabSathi</div>
           <p className="mt-4 max-w-md text-sm leading-6 text-zinc-300">
@@ -17,7 +17,7 @@ export default function AuthLayout({ children, title, subtitle }) {
         </div>
       </section>
       <section className="flex items-center justify-center">
-        <div className="w-full max-w-md rounded-lg bg-white p-6 shadow-soft">
+        <div className="w-full max-w-md rounded-lg border border-zinc-200 bg-white p-6 shadow-soft">
           <h1 className="text-3xl font-bold text-ink">{title}</h1>
           <p className="mt-2 text-sm leading-6 text-zinc-500">{subtitle}</p>
           <div className="mt-7">{children}</div>

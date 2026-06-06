@@ -1,6 +1,6 @@
 # HisabSathi Frontend
 
-React, Vite, and Tailwind CSS client for HisabSathi.
+Premium React, Vite, and Tailwind CSS client for HisabSathi.
 
 ## Setup
 
@@ -20,8 +20,16 @@ npm run dev
 ## Structure
 
 - `src/app`: app shell and providers
-- `src/components`: shared UI and layout components
-- `src/features`: product feature pages
+- `src/components`: shared UI, cards, forms, and layout components
+- `src/features`: product feature pages and API service modules
 - `src/routes`: route declarations and protected route handling
 - `src/services`: API clients and service modules
 - `src/styles`: Tailwind entry styles
+
+## Environment
+
+Create `frontend/.env` locally:
+
+```text
+VITE_API_BASE_URL=http://127.0.0.1:8000/api
+```
