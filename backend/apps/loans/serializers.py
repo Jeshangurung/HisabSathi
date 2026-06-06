@@ -1,5 +1,7 @@
 from rest_framework import serializers
 
+from apps.common.validators import validate_positive_money
+
 from .models import Loan
 
 
@@ -16,8 +18,9 @@ class LoanSerializer(serializers.ModelSerializer):
             "borrower",
             "borrower_display",
             "amount",
-            "note",
+            "reason",
             "due_date",
+            "proof_image",
             "status",
             "paid_at",
             "created_at",
@@ -30,4 +33,6 @@ class LoanSerializer(serializers.ModelSerializer):
         borrower = attrs.get("borrower")
         if lender and borrower and lender == borrower:
             raise serializers.ValidationError("Lender and borrower must be different users.")
+        if "amount" in attrs:
+            attrs["amount"] = validate_positive_money(attrs["amount"])
         return attrs

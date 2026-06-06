@@ -2,6 +2,7 @@ from .base import *
 
 
 DEBUG = False
+SECRET_KEY = config("DJANGO_SECRET_KEY")
 
 SECURE_BROWSER_XSS_FILTER = True
 SECURE_CONTENT_TYPE_NOSNIFF = True

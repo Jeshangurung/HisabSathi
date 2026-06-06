@@ -1,5 +1,6 @@
 from django.contrib.auth import get_user_model
 from rest_framework import serializers
+from rest_framework_simplejwt.tokens import RefreshToken
 
 from .models import PaymentProfile
 
@@ -8,9 +9,11 @@ User = get_user_model()
 
 
 class UserSerializer(serializers.ModelSerializer):
+    payment_profile_id = serializers.IntegerField(source="payment_profile.id", read_only=True)
+
     class Meta:
         model = User
-        fields = ("id", "username", "email", "full_name", "phone_number", "avatar")
+        fields = ("id", "username", "email", "full_name", "phone_number", "avatar", "payment_profile_id")
         read_only_fields = ("id",)
 
 
@@ -27,8 +30,20 @@ class RegisterSerializer(serializers.ModelSerializer):
         user = User(**validated_data)
         user.set_password(password)
         user.save()
-        PaymentProfile.objects.create(user=user)
+        PaymentProfile.objects.create(user=user, phone_number=user.phone_number)
         return user
+
+
+class RegisterResponseSerializer(UserSerializer):
+    class Meta(UserSerializer.Meta):
+        fields = UserSerializer.Meta.fields
+
+    def to_representation(self, instance):
+        data = super().to_representation(instance)
+        refresh = RefreshToken.for_user(instance)
+        data["access"] = str(refresh.access_token)
+        data["refresh"] = str(refresh)
+        return data
 
 
 class PaymentProfileSerializer(serializers.ModelSerializer):
@@ -37,6 +52,7 @@ class PaymentProfileSerializer(serializers.ModelSerializer):
         fields = (
             "id",
             "user",
+            "phone_number",
             "esewa_number",
             "khalti_number",
             "bank_name",

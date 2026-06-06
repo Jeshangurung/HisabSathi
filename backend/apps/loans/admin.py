@@ -6,5 +6,5 @@ from .models import Loan
 @admin.register(Loan)
 class LoanAdmin(admin.ModelAdmin):
     list_display = ("lender", "borrower", "amount", "status", "due_date")
-    list_filter = ("status",)
-    search_fields = ("lender__username", "borrower__username", "note")
+    list_filter = ("status", "due_date")
+    search_fields = ("lender__username", "borrower__username", "reason")

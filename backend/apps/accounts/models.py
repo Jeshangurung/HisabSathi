@@ -15,6 +15,7 @@ class User(AbstractUser):
 
 class PaymentProfile(TimeStampedModel):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name="payment_profile")
+    phone_number = models.CharField(max_length=20, blank=True)
     esewa_number = models.CharField(max_length=20, blank=True)
     khalti_number = models.CharField(max_length=20, blank=True)
     bank_name = models.CharField(max_length=120, blank=True)

@@ -15,5 +15,5 @@ class CustomUserAdmin(UserAdmin):
 
 @admin.register(PaymentProfile)
 class PaymentProfileAdmin(admin.ModelAdmin):
-    list_display = ("user", "esewa_number", "khalti_number", "bank_name")
-    search_fields = ("user__username", "user__email", "esewa_number", "khalti_number")
+    list_display = ("user", "phone_number", "esewa_number", "khalti_number", "bank_name")
+    search_fields = ("user__username", "user__email", "phone_number", "esewa_number", "khalti_number")

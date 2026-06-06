@@ -12,8 +12,7 @@ class Reminder(TimeStampedModel):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="reminders")
     reminder_type = models.CharField(max_length=20, choices=ReminderType.choices)
     title = models.CharField(max_length=160)
-    body = models.TextField(blank=True)
-    due_at = models.DateTimeField(blank=True, null=True)
+    message = models.TextField(blank=True)
     is_read = models.BooleanField(default=False)
     settlement = models.ForeignKey(
         "settlements.Settlement",

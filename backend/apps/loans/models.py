@@ -7,14 +7,16 @@ from apps.common.models import TimeStampedModel
 class Loan(TimeStampedModel):
     class Status(models.TextChoices):
         ACTIVE = "active", "Active"
+        MARKED_PAID = "marked_paid", "Marked paid"
         PAID = "paid", "Paid"
-        OVERDUE = "overdue", "Overdue"
+        CANCELLED = "cancelled", "Cancelled"
 
     lender = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="loans_given")
     borrower = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="loans_taken")
     amount = models.DecimalField(max_digits=12, decimal_places=2)
-    note = models.TextField(blank=True)
+    reason = models.TextField(blank=True)
     due_date = models.DateField(blank=True, null=True)
+    proof_image = models.ImageField(upload_to="loan_proofs/", blank=True, null=True)
     status = models.CharField(max_length=20, choices=Status.choices, default=Status.ACTIVE)
     paid_at = models.DateTimeField(blank=True, null=True)
 

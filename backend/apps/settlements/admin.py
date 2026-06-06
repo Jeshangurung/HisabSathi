@@ -5,6 +5,6 @@ from .models import Settlement
 
 @admin.register(Settlement)
 class SettlementAdmin(admin.ModelAdmin):
-    list_display = ("group", "payer", "receiver", "amount", "status", "created_at")
-    list_filter = ("status",)
-    search_fields = ("group__name", "payer__username", "receiver__username")
+    list_display = ("group", "expense", "from_user", "to_user", "amount", "status", "created_at")
+    list_filter = ("status", "payment_method")
+    search_fields = ("group__name", "expense__title", "from_user__username", "to_user__username")
