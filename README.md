@@ -2,6 +2,11 @@
 
 HisabSathi is a Nepal-focused group expense, bill splitting, personal loan tracking, and payment reminder platform for friends, students, roommates, travel groups, and office groups.
 
+## Tech Stack
+
+- Backend: Django, Django REST Framework, Simple JWT, PostgreSQL, django-cors-headers, Pillow
+- Frontend: React, Vite, Tailwind CSS, Axios, React Router
+
 This repository is organized as a professional full-stack monorepo:
 
 ```text
@@ -43,6 +48,14 @@ cd frontend
 npm install
 npm run dev
 ```
+
+The frontend setup is currently prepared for the Step 3 implementation pass.
+
+## Documentation
+
+- [Backend README](backend/README.md)
+- [API Documentation](docs/API.md)
+- [Backend Testing Guide](docs/BACKEND_TESTING.md)
 
 ## Repository Status
 

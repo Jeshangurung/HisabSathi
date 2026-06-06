@@ -1,5 +1,6 @@
 from datetime import timedelta
 from pathlib import Path
+from urllib.parse import quote
 
 import dj_database_url
 from decouple import config
@@ -7,11 +8,14 @@ from decouple import config
 
 BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
-SECRET_KEY = config("DJANGO_SECRET_KEY", default="unsafe-development-secret-key-change-me-for-local-development-only")
-DEBUG = config("DJANGO_DEBUG", default=False, cast=bool)
+SECRET_KEY = config(
+    "SECRET_KEY",
+    default=config("DJANGO_SECRET_KEY", default="unsafe-development-secret-key-change-me-for-local-development-only"),
+)
+DEBUG = config("DEBUG", default=config("DJANGO_DEBUG", default=False), cast=bool)
 ALLOWED_HOSTS = [
     host.strip()
-    for host in config("DJANGO_ALLOWED_HOSTS", default="localhost,127.0.0.1").split(",")
+    for host in config("ALLOWED_HOSTS", default=config("DJANGO_ALLOWED_HOSTS", default="localhost,127.0.0.1")).split(",")
     if host.strip()
 ]
 
@@ -66,9 +70,26 @@ TEMPLATES = [
 
 WSGI_APPLICATION = "config.wsgi.application"
 
+DATABASE_URL = config("DATABASE_URL", default="")
+POSTGRES_DB = config("POSTGRES_DB", default="")
+POSTGRES_USER = config("POSTGRES_USER", default="")
+POSTGRES_PASSWORD = config("POSTGRES_PASSWORD", default="")
+POSTGRES_HOST = config("POSTGRES_HOST", default="localhost")
+POSTGRES_PORT = config("POSTGRES_PORT", default="5432")
+
+if DATABASE_URL:
+    DEFAULT_DATABASE_URL = DATABASE_URL
+elif POSTGRES_DB and POSTGRES_USER:
+    DEFAULT_DATABASE_URL = (
+        f"postgresql://{quote(POSTGRES_USER)}:{quote(POSTGRES_PASSWORD)}"
+        f"@{POSTGRES_HOST}:{POSTGRES_PORT}/{quote(POSTGRES_DB)}"
+    )
+else:
+    DEFAULT_DATABASE_URL = f"sqlite:///{BASE_DIR / 'db.sqlite3'}"
+
 DATABASES = {
     "default": dj_database_url.config(
-        default=config("DATABASE_URL", default=f"sqlite:///{BASE_DIR / 'db.sqlite3'}"),
+        default=DEFAULT_DATABASE_URL,
         conn_max_age=600,
     )
 }
@@ -93,9 +114,9 @@ TIME_ZONE = "Asia/Kathmandu"
 USE_I18N = True
 USE_TZ = True
 
-STATIC_URL = "static/"
+STATIC_URL = config("STATIC_URL", default="static/")
 STATIC_ROOT = BASE_DIR / "staticfiles"
-MEDIA_URL = "media/"
+MEDIA_URL = config("MEDIA_URL", default="media/")
 MEDIA_ROOT = BASE_DIR / "media"
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
@@ -119,8 +140,8 @@ REST_FRAMEWORK = {
 }
 
 SIMPLE_JWT = {
-    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=30),
-    "REFRESH_TOKEN_LIFETIME": timedelta(days=7),
+    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=config("ACCESS_TOKEN_LIFETIME_MINUTES", default=30, cast=int)),
+    "REFRESH_TOKEN_LIFETIME": timedelta(days=config("REFRESH_TOKEN_LIFETIME_DAYS", default=7, cast=int)),
     "AUTH_HEADER_TYPES": ("Bearer",),
     "ROTATE_REFRESH_TOKENS": True,
     "BLACKLIST_AFTER_ROTATION": True,
@@ -128,6 +149,6 @@ SIMPLE_JWT = {
 
 CORS_ALLOWED_ORIGINS = [
     origin.strip()
-    for origin in config("CORS_ALLOWED_ORIGINS", default="http://localhost:5173").split(",")
+    for origin in config("CORS_ALLOWED_ORIGINS", default="http://localhost:5173,http://127.0.0.1:5173").split(",")
     if origin.strip()
 ]
