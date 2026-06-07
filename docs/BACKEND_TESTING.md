@@ -47,7 +47,17 @@ Required testing order:
 11. Mark loan as paid with `POST /api/loans/{id}/mark-paid/`.
 12. Confirm loan paid with `POST /api/loans/{id}/confirm-paid/`.
 13. View reminders with `GET /api/reminders/`.
-14. View dashboard summary with `GET /api/dashboard/`.
+14. Upload payment proof when marking a settlement as paid.
+15. Confirm settlement as the receiver and verify the related `ExpenseSplit` status becomes `confirmed`.
+16. Create a personal loan with `POST /api/loans/`.
+17. Mark loan as paid with `POST /api/loans/{id}/mark-paid/`.
+18. Confirm loan paid with `POST /api/loans/{id}/confirm-paid/`.
+19. View reminders with `GET /api/reminders/`.
+20. Mark one reminder read with `POST /api/reminders/{id}/mark-read/`.
+21. Mark all reminders read with `POST /api/reminders/mark-all-read/`.
+22. View dashboard summary with `GET /api/dashboard/`.
+23. Logout with `POST /api/auth/logout/`.
+24. Confirm protected endpoints reject unauthenticated requests.
 
 ## Edge Cases
 

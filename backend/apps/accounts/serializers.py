@@ -1,5 +1,6 @@
 from django.contrib.auth import get_user_model
 from rest_framework import serializers
+from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 from rest_framework_simplejwt.tokens import RefreshToken
 
 from .models import PaymentProfile
@@ -63,3 +64,13 @@ class PaymentProfileSerializer(serializers.ModelSerializer):
             "updated_at",
         )
         read_only_fields = ("id", "user", "created_at", "updated_at")
+
+
+class EmailOrUsernameTokenObtainPairSerializer(TokenObtainPairSerializer):
+    def validate(self, attrs):
+        identifier = attrs.get(self.username_field)
+        if identifier and "@" in identifier:
+            user = User.objects.filter(email__iexact=identifier, is_active=True).order_by("id").first()
+            if user:
+                attrs[self.username_field] = user.get_username()
+        return super().validate(attrs)

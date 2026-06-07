@@ -28,6 +28,24 @@ class AccountApiTests(APITestCase):
         user = User.objects.get(username="sita")
         self.assertTrue(PaymentProfile.objects.filter(user=user, phone_number="9800000000").exists())
 
+    def test_token_login_accepts_email_or_username(self):
+        User.objects.create_user(username="hari", email="hari@example.com", password="strong-password")
+
+        username_response = self.client.post(
+            "/api/auth/token/",
+            {"username": "hari", "password": "strong-password"},
+            format="json",
+        )
+        email_response = self.client.post(
+            "/api/auth/token/",
+            {"username": "hari@example.com", "password": "strong-password"},
+            format="json",
+        )
+
+        self.assertEqual(username_response.status_code, status.HTTP_200_OK)
+        self.assertEqual(email_response.status_code, status.HTTP_200_OK)
+        self.assertIn("access", email_response.data)
+
     def test_current_user_endpoint_updates_profile(self):
         user = User.objects.create_user(username="ram", password="strong-password")
         self.client.force_authenticate(user=user)

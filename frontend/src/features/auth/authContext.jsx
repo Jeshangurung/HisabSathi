@@ -1,4 +1,4 @@
-import { createContext, useEffect, useMemo, useState } from "react";
+import { createContext, useCallback, useEffect, useMemo, useState } from "react";
 
 import { TOKEN_STORAGE_KEYS } from "../../lib/constants.js";
 import { getCurrentUser, loginUser, logoutUser, registerUser } from "./authService.js";
@@ -17,29 +17,29 @@ export function AuthProvider({ children }) {
   const [user, setUser] = useState(readStoredUser);
   const [isBootstrapping, setIsBootstrapping] = useState(Boolean(accessToken));
 
-  const persistSession = ({ access, refresh, profile }) => {
+  const persistSession = useCallback(({ access, refresh, profile }) => {
     localStorage.setItem(TOKEN_STORAGE_KEYS.access, access);
     localStorage.setItem(TOKEN_STORAGE_KEYS.refresh, refresh);
     localStorage.setItem(TOKEN_STORAGE_KEYS.user, JSON.stringify(profile));
     setAccessToken(access);
     setRefreshToken(refresh);
     setUser(profile);
-  };
+  }, []);
 
-  const clearSession = () => {
+  const clearSession = useCallback(() => {
     localStorage.removeItem(TOKEN_STORAGE_KEYS.access);
     localStorage.removeItem(TOKEN_STORAGE_KEYS.refresh);
     localStorage.removeItem(TOKEN_STORAGE_KEYS.user);
     setAccessToken(null);
     setRefreshToken(null);
     setUser(null);
-  };
+  }, []);
 
   useEffect(() => {
     const onLogout = () => clearSession();
     window.addEventListener("hisabsathi:logout", onLogout);
     return () => window.removeEventListener("hisabsathi:logout", onLogout);
-  }, []);
+  }, [clearSession]);
 
   useEffect(() => {
     async function bootstrap() {
@@ -59,28 +59,28 @@ export function AuthProvider({ children }) {
     }
 
     bootstrap();
-  }, []);
+  }, [accessToken, clearSession]);
 
-  const login = async ({ identifier, password }) => {
+  const login = useCallback(async ({ identifier, password }) => {
     const tokens = await loginUser({ username: identifier, password });
     const profile = await getCurrentUser();
     persistSession({ access: tokens.access, refresh: tokens.refresh, profile });
     return profile;
-  };
+  }, [persistSession]);
 
-  const register = async (payload) => {
+  const register = useCallback(async (payload) => {
     const data = await registerUser(payload);
     persistSession({ access: data.access, refresh: data.refresh, profile: data });
     return data;
-  };
+  }, [persistSession]);
 
-  const logout = async () => {
+  const logout = useCallback(async () => {
     try {
       await logoutUser(refreshToken);
     } finally {
       clearSession();
     }
-  };
+  }, [clearSession, refreshToken]);
 
   const value = useMemo(
     () => ({
@@ -94,7 +94,7 @@ export function AuthProvider({ children }) {
       setUser,
       user,
     }),
-    [accessToken, refreshToken, user, isBootstrapping],
+    [accessToken, refreshToken, user, isBootstrapping, login, logout, register],
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

@@ -20,7 +20,8 @@ export function useApi(fetcher, deps = [], options = {}) {
     } finally {
       setIsLoading(false);
     }
-  }, deps);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [fetcher, ...deps]);
 
   useEffect(() => {
     load();
