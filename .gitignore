@@ -7,7 +7,9 @@ venv/
 env/
 .env
 .env.*
-!.env.example
+
+# Docs
+docs/
 
 # Django
 backend/media/
