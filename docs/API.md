@@ -39,8 +39,6 @@ POST /api/auth/token/
 }
 ```
 
-The `username` field accepts either a username or the user's email address.
-
 Refresh:
 
 ```http

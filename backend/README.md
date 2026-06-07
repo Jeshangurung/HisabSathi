@@ -1,17 +1,6 @@
 # HisabSathi Backend
 
-Django REST Framework API for the HisabSathi MVP. It handles users, payment profiles, groups, expenses, settlements, personal loans, reminders, and dashboard summaries.
-
-## Tech Stack
-
-- Django 5
-- Django REST Framework
-- Simple JWT
-- django-cors-headers
-- dj-database-url
-- PostgreSQL-ready configuration
-- Pillow for image uploads
-- Gunicorn for production serving
+Django REST Framework API for HisabSathi: group expenses, equal/custom bill splitting, settlements, payment proof, personal loans, reminders, and dashboard analytics.
 
 ## Setup
 
@@ -25,40 +14,30 @@ python manage.py createsuperuser
 python manage.py runserver
 ```
 
-The API runs at:
-
-```text
-http://127.0.0.1:8000/api
-```
-
 ## Environment Variables
 
-Create `backend/.env` from `backend/.env.example`.
+Set these in your local shell, hosting provider, or secret manager:
 
 ```text
-SECRET_KEY=replace-with-a-long-random-secret-key
-DEBUG=True
-DJANGO_SETTINGS_MODULE=config.settings.development
-ALLOWED_HOSTS=localhost,127.0.0.1
-CORS_ALLOWED_ORIGINS=http://localhost:5173,http://127.0.0.1:5173
-DATABASE_URL=
-ACCESS_TOKEN_LIFETIME_MINUTES=30
-REFRESH_TOKEN_LIFETIME_DAYS=7
-MEDIA_URL=/media/
-STATIC_URL=/static/
+DJANGO_SECRET_KEY
+DJANGO_DEBUG
+DJANGO_ALLOWED_HOSTS
+CORS_ALLOWED_ORIGINS
+DATABASE_URL
+DJANGO_SETTINGS_MODULE
 ```
 
-Use `DEBUG=False`, `DJANGO_SETTINGS_MODULE=config.settings.production`, PostgreSQL, production allowed hosts, and production CORS origins before deployment.
+`DATABASE_URL` supports PostgreSQL in production and SQLite fallback for local development.
 
 ## Apps
 
-- `accounts`: custom user, register, login, logout, current user, payment profile.
-- `groups`: expense groups, member roles, add/remove member workflows.
-- `expenses`: equal/custom split creation, decimal validation, settlement generation.
-- `settlements`: money owed, mark paid, proof upload, confirm/reject payment.
-- `loans`: personal loan creation, mark paid, confirm paid, overdue views.
-- `reminders`: reminders, mark read, mark all read.
-- `common`: pagination, validation, responses, dashboard summary.
+- `accounts`: custom user, registration, current user, logout, payment profile.
+- `groups`: groups, members, owner/member roles, member management.
+- `expenses`: equal/custom splits, money validation, settlement generation.
+- `settlements`: mark paid, confirm received, reject proof, proof upload.
+- `loans`: personal loans, due reminders, mark/confirm paid workflow.
+- `reminders`: reminder list, mark read, mark all read.
+- `common`: pagination, responses, validation, dashboard summary.
 
 ## Core Endpoints
 
@@ -70,14 +49,11 @@ POST   /api/auth/logout/
 GET    /api/auth/me/
 PATCH  /api/auth/me/
 GET    /api/dashboard/
-GET    /api/payment-profiles/
-PATCH  /api/payment-profiles/{id}/
 GET    /api/groups/
 POST   /api/groups/
 POST   /api/groups/{id}/add-member/
 DELETE /api/groups/{id}/remove-member/{user_id}/
 POST   /api/expenses/
-GET    /api/expenses/{id}/
 GET    /api/settlements/i-owe/
 GET    /api/settlements/owed-to-me/
 POST   /api/settlements/{id}/mark-paid/
@@ -94,11 +70,7 @@ POST   /api/reminders/{id}/mark-read/
 POST   /api/reminders/mark-all-read/
 ```
 
-`POST /api/auth/token/` accepts either username or email in the `username` field.
-
-## Example Expense Requests
-
-Equal split:
+## Example Expense Request
 
 ```json
 {
@@ -108,7 +80,7 @@ Equal split:
   "total_amount": "3600.00",
   "paid_by": 1,
   "split_type": "equal",
-  "category": "Food",
+  "category": "food",
   "split_participant_ids": [1, 2, 3, 4]
 }
 ```
@@ -130,23 +102,15 @@ Custom split:
 }
 ```
 
-## Validation
+## Testing
 
 ```bash
+python -m compileall backend
 cd backend
-python -m compileall .
 python manage.py makemigrations --check --dry-run
-python manage.py migrate --noinput
+python manage.py migrate
 python manage.py check
-python manage.py test -v 2
+python manage.py test
 ```
 
-## Deployment
-
-Deployment files are included:
-
-- `Procfile`
-- `runtime.txt`
-- `build.sh`
-
-See [../docs/DEPLOYMENT.md](../docs/DEPLOYMENT.md) and [../docs/PRODUCTION_CHECKLIST.md](../docs/PRODUCTION_CHECKLIST.md) before launching.
+Use Postman or Thunder Client with a `Bearer <access_token>` authorization header after login.
